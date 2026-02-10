@@ -106,16 +106,16 @@
 
 
 
-## 👩‍💻 담당 역할 (My Role)
+## 👩‍💻 담당 역할
 
-### ✅ 1) 실시간 채팅 기능 구현 (Core)
+### 1) 실시간 채팅 기능 구현 (Core)
 - WebSocket **STOMP 기반 실시간 채팅 송수신**
 - 채팅방 생성 / 목록 조회 / 메시지 내역 조회
 - 메시지 **읽음 처리 + 실시간 읽음 이벤트 전송**
 - Kafka 기반 이벤트 발행/구독으로 비동기 처리
 - MongoDB 기반 메시지 저장 구조 설계 및 적용
 
-### ✅ 2) 배포 & CI/CD (Infra / DevOps)
+### 2) 배포 & CI/CD (Infra / DevOps)
 - AWS EC2 기반 서비스 배포
 - Docker / Docker Compose 운영 환경 구성
 - GitHub Actions 기반 CI/CD 자동 배포 구축
@@ -125,25 +125,25 @@
 
 ## ✨ 주요 기능
 
-### 💬 실시간 채팅 (WebSocket STOMP)
+### 실시간 채팅 (WebSocket STOMP)
 - 사용자는 실시간으로 메시지를 주고받을 수 있음
 - 채팅방 단위로 메시지 구독(`/topic/chat/{chatId}`) 구조 적용
 - 채팅 화면 진입 시 읽음 처리 이벤트 반영
 
-### ✅ 읽음 처리 (Read Receipt)
-- 상대방 메시지 중 **읽지 않은 메시지만 조회**
+### 읽음 처리 (Read Receipt)
+- 상대방 메시지 중 읽지 않은 메시지만 조회
 - 읽음 처리 후 DB 반영 + 실시간 브로드캐스트
 
-### 📦 Kafka 이벤트 기반 처리
+### Kafka 이벤트 기반 처리
 - 메시지 전송 / 읽음 처리 이벤트를 Kafka로 발행
 - Listener가 이벤트를 구독하고 WebSocket으로 브로드캐스트
-- 서비스 확장(MSA) 시에도 구조 유지 가능
+- msa구조에 적합함
 
 ---
 
-## ☁️ 시스템 아키텍처 (Chat 중심)
+## 시스템 아키텍처 (Chat)
 
-### ✅ 흐름 요약
+### 흐름 요약
 1. Client → WebSocket(`/ws-chat`) 연결  
 2. 메시지 발행 → `/app/chat.send`  
 3. 서버에서 메시지 저장 + Kafka 이벤트 발행  
@@ -156,45 +156,44 @@
 
 ## 📌 채팅 기능 상세 설계
 
-### 1) REST API (채팅방/내역)
+### 1) REST API
 - 채팅방 생성
 - 채팅방 목록 조회
-- 채팅 메시지 조회(시간순)
+- 채팅 메시지 조회
 - 채팅방 나가기
-- 채팅 읽음 처리
+- 채팅 읽음 처리 요청
 
+  
 ### 2) WebSocket STOMP 설계
 - Endpoint: `/ws-chat`
 - App Prefix: `/app`
 - Broker: `/topic`
 
-### 3) MongoDB 저장 구조 (예시)
 
-#### ✅ ChatRoom
-- chatId
+### 3) MongoDB 구조
+
+#### ChatRoom
+- id
+- chatCode
 - productCode
 - sellerCode
 - buyerCode
-- status (OPEN/CLOSED)
-- createdAt
+- status (OPEN / CLOSED)
+- lastMessage
+- lastMessageAt
+- sellerLastReadAt
+- buyerLastReadAt
+- sellerUnreadCount
+- buyerUnreadCount
 
-#### ✅ ChatMessage
+#### ChatMessage
+- id
 - chatId
 - senderCode
-- content
+- message
 - createdAt
-- isRead
-- readAt
 
 ---
-
-
-
-
-
-
-
-
 
 ## ⚠️ Troubleshooting – 채팅방 목록 조회 성능 개선 (N+1)
 
@@ -206,7 +205,7 @@
 
 ### 해결
 - 채팅방 목록에서 `productCode`만 수집
-- Product 서비스 **배치 조회 API 1회 호출**
+- Product 서비스 배치 조회 API 1회 호출
 - 응답을 `Map<productCode, title>`로 변환
 - 채팅방 루프에서는 Map 조회만 수행
 
@@ -249,7 +248,7 @@ Map<String, String> productTitleMap = products.stream()
 - Executed Tests: 2,190
 - Errors: 137
 
-### 📈 결과 해석
+### 결과 해석
 - Feign 호출을 채팅방 수만큼 수행하던 구조를 배치 조회 방식으로 변경하여  
   호출 횟수를 **N → 1**로 감소시킴
 - 평균 응답 시간은 **약 32% 감소**
@@ -257,7 +256,6 @@ Map<String, String> productTitleMap = products.stream()
 - 처리량 증가로 일부 요청에서 타임아웃 에러가 발생했으나,  
   이는 병목 제거 후 서버가 더 많은 요청을 수용한 결과로 해석함
 
-### ✅ 결론
+### 결론
 - 구조적 성능 병목(N+1)을 제거하여 응답 속도와 처리량을 동시에 개선
-- 성능 테스트를 통해 개선 효과를 **정량적으로 검증**
 
