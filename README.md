@@ -108,14 +108,14 @@
 
 ## 👩‍💻 담당 역할
 
-### 1) 실시간 채팅 기능 구현 (Core)
-- WebSocket **STOMP 기반 실시간 채팅 송수신**
+### 1) 실시간 채팅 기능 구현
+- WebSocket STOMP 기반 실시간 채팅 송수신
 - 채팅방 생성 / 목록 조회 / 메시지 내역 조회
-- 메시지 **읽음 처리 + 실시간 읽음 이벤트 전송**
+- 메시지 읽음 처리 + 실시간 읽음 이벤트 전송
 - Kafka 기반 이벤트 발행/구독으로 비동기 처리
 - MongoDB 기반 메시지 저장 구조 설계 및 적용
 
-### 2) 배포 & CI/CD (Infra / DevOps)
+### 2) 배포 & CI/CD
 - AWS EC2 기반 서비스 배포
 - Docker / Docker Compose 운영 환경 구성
 - GitHub Actions 기반 CI/CD 자동 배포 구축
