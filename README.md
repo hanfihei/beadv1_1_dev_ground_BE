@@ -141,7 +141,7 @@
 
 ---
 
-## 시스템 아키텍처 (Chat)
+## 🛠️ 시스템 아키텍처 (Chat)
 
 ### 흐름 요약
 1. Client → WebSocket(`/ws-chat`) 연결  
@@ -223,7 +223,7 @@ Map<String, String> productTitleMap = products.stream()
         CartProductsResponse::productCode,
         CartProductsResponse::title
     ));
-
+```
 
 
 ## 📊 성능 테스트 결과 (nGrinder)
