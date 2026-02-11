@@ -71,11 +71,6 @@ public class ChatRoomService {
                 ChatRoomStatus.OPEN, userCode, ChatRoomStatus.OPEN, userCode
         );
 
-//        List<String> productCodes = rooms.stream().map(ChatRoom::getProductCode).toList();
-
-//        log.info("채팅방: {}", productCodes);
-//        BaseResponse<List<CartProductsResponse>> cartProducts = productClient.getCartProducts(new CartProductsRequest(productCodes));
-
         List<ChatRoomSummary> list = new ArrayList<>();
         for (ChatRoom chatRoom : rooms) {
             ChatMessages last = messageRepository.findFirstByChatIdOrderByCreatedAtDesc(chatRoom.getId());
