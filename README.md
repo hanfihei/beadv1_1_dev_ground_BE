@@ -236,25 +236,23 @@ Map<String, String> productTitleMap = products.stream()
 
 ### 🔴 개선 전 (N+1 존재)
 - Mean Test Time: 4,056 ms
-- TPS: 102
-- Peak TPS: 131
+- TPS: 102.1
+- Peak TPS: 131.0
 - Executed Tests: 1,558
 - Errors: 0
 
 ### 🟢 개선 후 (N+1 제거)
 - Mean Test Time: 2,762 ms
 - TPS: 145.4
-- Peak TPS: 215
+- Peak TPS: 215.0
 - Executed Tests: 2,190
-- Errors: 137
+- Errors: 0
 
 ### 결과 해석
 - Feign 호출을 채팅방 수만큼 수행하던 구조를 배치 조회 방식으로 변경하여  
   호출 횟수를 **N → 1**로 감소시킴
 - 평균 응답 시간은 **약 32% 감소**
 - 동일 부하 조건에서 TPS는 **약 42% 증가**
-- 처리량 증가로 일부 요청에서 타임아웃 에러가 발생했으나,  
-  이는 병목 제거 후 서버가 더 많은 요청을 수용한 결과로 해석함
 
 ### 결론
 - 구조적 성능 병목(N+1)을 제거하여 응답 속도와 처리량을 동시에 개선
