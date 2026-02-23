@@ -1,7 +1,10 @@
 package io.devground.user.config;
 
-import java.util.Arrays;
-
+import io.devground.auth.jwt.CustomLogoutFilter;
+import io.devground.auth.jwt.JWTUtil;
+import io.devground.auth.jwt.LoginFilter;
+import io.devground.user.service.RedisService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,11 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import io.devground.auth.jwt.CustomLogoutFilter;
-import io.devground.auth.jwt.JWTUtil;
-import io.devground.auth.jwt.LoginFilter;
-import io.devground.user.service.RedisService;
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor

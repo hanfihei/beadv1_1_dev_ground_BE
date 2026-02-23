@@ -10,10 +10,4 @@ import java.util.List;
 public interface MessageRepository extends MongoRepository<ChatMessages, String> {
 
     List<ChatMessages> findByChatIdOrderByCreatedAtAsc(String chatId);
-
-    List<ChatMessages> findByChatIdAndSenderCodeNotAndIsReadFalse(String chatId, String senderCode);
-
-    ChatMessages findFirstByChatIdOrderByCreatedAtDesc(String chatId);
-
-    long countByChatIdAndSenderCodeNotAndIsReadFalse(String chatId, String senderCode);
 }

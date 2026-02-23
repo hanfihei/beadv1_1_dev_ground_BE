@@ -20,4 +20,8 @@ public class ChatRoomSummary {
     private String lastMessage;
     private LocalDateTime lastMessageAt;
     private long unreadCount;
+    private LocalDateTime sellerLastReadAt;
+    private LocalDateTime buyerLastReadAt;
+    private int sellerUnreadCount;
+    private int buyerUnreadCount;
 }

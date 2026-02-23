@@ -23,6 +23,8 @@ public interface ProductClient {
             @RequestHeader("X-CODE") String userCode
     );
 
+    //채팅방 목록 조회 시 호출
     @PostMapping("/carts")
-    BaseResponse<List<CartProductsResponse>> getCartProducts(@RequestBody CartProductsRequest request);
+    BaseResponse<List<CartProductsResponse>> getCartProducts(
+            @RequestBody CartProductsRequest request);
 }
