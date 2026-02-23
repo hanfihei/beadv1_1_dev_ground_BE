@@ -21,19 +21,11 @@ public class ChatMessageService {
     private final ChatRoomService chatRoomService;
     private final UserClient userClient;
 
+    // TODO: 트래픽 생길 시 sendMessage를 command서비스로 빼고 sendMessage에 트랜잭션을 걸어야함 (현재는 self-invocation 문제로 보류)
     public ChatMessages sendValidatedMessage(String userCodeHeader, ChatMessageRequest request) {
-        if (request == null) {
-            throw new ServiceException(ErrorCode.CHAT_MESSAGE_MISSING);
-        }
         String chatId = request.getChatId();
         String senderCode = request.getSenderCode();
 
-        if (chatId == null || chatId.isBlank()) {
-            throw new ServiceException(ErrorCode.CHAT_ID_MISSING);
-        }
-        if (senderCode == null || senderCode.isBlank()) {
-            throw new ServiceException(ErrorCode.SENDER_CODE_MISSING);
-        }
         if (userCodeHeader == null || userCodeHeader.isBlank()) {
             throw new ServiceException(ErrorCode.XCODE_NOT_FOUND);
         }
@@ -47,32 +39,34 @@ public class ChatMessageService {
         if (!isParticipant) {
             throw new ServiceException(ErrorCode.CHAT_ROOM_ACCESS_DENIED);
         }
-
         return sendMessage(chatId, senderCode, request.getMessage());
     }
 
     public ChatMessages sendMessage(String chatId, String senderCode, String message) {
-        return messageRepository.save(
+        ChatMessages saved = messageRepository.save(
                 ChatMessages.builder()
                         .chatId(chatId)
                         .senderCode(senderCode)
                         .message(message)
-                        .createdAt(LocalDateTime.now())
-                        .isRead(false)
                         .build()
         );
+        ChatRoom room = chatRoomService.getRoom(chatId);
+        room.updateMessage(senderCode, message, saved.getCreatedAt());
+        chatRoomService.saveRoom(room);
+        return saved;
     }
 
     public List<ChatMessages> getMessages(String chatId) {
         return messageRepository.findByChatIdOrderByCreatedAtAsc(chatId);
     }
 
-    public List<ChatMessages> markAsRead(String chatId, String readerCode) {
-        List<ChatMessages> unread = messageRepository.findByChatIdAndSenderCodeNotAndIsReadFalse(chatId, readerCode);
-        LocalDateTime readAt = LocalDateTime.now();
-        unread.forEach(msg -> msg.markRead(readAt));
-        return messageRepository.saveAll(unread);
+    public void markAsRead(String chatId, String readerCode) {
+        ChatRoom room = chatRoomService.getRoom(chatId);
+        room.markRead(readerCode, LocalDateTime.now());
+        chatRoomService.saveRoom(room);
     }
+
+
 
 
 }

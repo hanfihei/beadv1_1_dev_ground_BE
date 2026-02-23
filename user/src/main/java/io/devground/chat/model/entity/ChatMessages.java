@@ -20,23 +20,14 @@ public class ChatMessages {
     private String chatId;
     private String message;
     private String senderCode;
-    private Boolean isRead;
     private LocalDateTime createdAt;
-    private LocalDateTime readAt;
 
     @Builder
-    public ChatMessages(String chatId, String senderCode, String message, Boolean isRead, LocalDateTime createdAt) {
+    public ChatMessages(String chatId, String senderCode, String message, LocalDateTime createdAt) {
         this.chatId = chatId;
         this.senderCode = senderCode;
         this.message = message;
-        this.isRead = isRead != null ? isRead : false;
         this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
     }
-
-    public void markRead(LocalDateTime readAt) {
-        this.isRead = true;
-        this.readAt = readAt;
-    }
-
 
 }
